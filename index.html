@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>THE BUTTON — An Internet Experiment</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080808;color:#f5f5f5;font-family:Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+main{width:100%;max-width:520px}
+.tag{font-size:11px;letter-spacing:5px;color:#888}
+h1{font-size:clamp(42px,12vw,76px);letter-spacing:-4px;margin:18px 0 8px}
+.sub{color:#999;font-size:13px;letter-spacing:2px}
+.counter{font-size:clamp(55px,15vw,90px);font-weight:800;margin:45px 0 0;font-variant-numeric:tabular-nums}
+.counter-label{font-size:10px;letter-spacing:4px;color:#777}
+button{margin:35px auto 20px;width:170px;height:170px;border-radius:50%;border:7px solid #501515;background:radial-gradient(circle at 35% 30%,#ff5555,#b90000 65%,#650000);color:white;font-size:20px;font-weight:bold;letter-spacing:3px;cursor:pointer;box-shadow:0 0 45px #a0000040,inset 0 4px 12px #ffffff30;transition:.12s}
+button:active{transform:scale(.94);box-shadow:0 0 15px #a00000}
+button:disabled{opacity:.6;cursor:wait}
+#message{min-height:25px;color:#ddd;font-size:13px;margin:12px}
+#status{font-size:10px;letter-spacing:2px;color:#777;margin-top:35px}
+.milestones{margin:40px auto 0;text-align:left;max-width:300px;border-top:1px solid #292929;padding-top:20px}
+.milestones h3{font-size:11px;letter-spacing:3px;color:#888}
+.milestone{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #202020;font-size:12px}
+.locked{color:#666}.unlocked{color:#ff5555}
+footer{font-size:10px;color:#555;margin-top:35px;letter-spacing:2px}
+</style>
+</head>
+<body>
+<main>
+<div class="tag">AN INTERNET EXPERIMENT</div>
+<h1>THE BUTTON</h1>
+<div class="sub">ONE BUTTON. ONE INTERNET. WHAT HAPPENS NEXT?</div>
+<div class="counter" id="counter">000000</div>
+<div class="counter-label">TOTAL PRESSES WORLDWIDE</div>
+<button id="press">PRESS</button>
+<div id="message">The experiment is waiting for you.</div>
+<div id="status">CONNECTING TO ENGINE...</div>
+<section class="milestones">
+<h3>GLOBAL MILESTONES</h3>
+<div id="milestones">Loading milestones...</div>
+</section>
+<footer>SEASON 01 — THE BEGINNING</footer>
+</main>
+<script>
+const API="https://the-button-engine.diasadhityaputra07.workers.dev";
+const $=id=>document.getElementById(id);
+let busy=false;
+const messages=[
+"You are now part of the experiment.",
+"Someone pressed before you. Someone will press after you.",
+"One press. One signal.",
+"The internet remembers."
+];
+function render(data){
+$("counter").textContent=Number(data.total||0).toLocaleString("en-US").padStart(6,"0");
+if(data.milestones){
+$("milestones").innerHTML=data.milestones.map(m=>
+`<div class="milestone"><span>${m.target.toLocaleString()} — ${m.title}</span><span class="${m.status==="UNLOCKED"?"unlocked":"locked"}">${m.status==="UNLOCKED"?"UNLOCKED":"LOCKED"}</span></div>`
+).join("");
+}
+}
+async function refresh(){
+try{
+const r=await fetch(API+"/api/state");
+if(!r.ok)throw Error("API error");
+const d=await r.json();
+render(d);
+$("status").textContent="● ENGINE ONLINE";
+$("status").style.color="#65bd78";
+}catch(e){
+$("status").textContent="● ENGINE OFFLINE — RETRYING";
+$("status").style.color="#e66";
+}
+}
+$("press").addEventListener("click",async()=>{
+if(busy)return;
+busy=true;
+$("press").disabled=true;
+$("message").textContent="Sending your signal...";
+try{
+const r=await fetch(API+"/api/press",{method:"POST"});
+if(!r.ok)throw Error("Press failed");
+const d=await r.json();
+if(!d.success)throw Error("Press failed");
+$("counter").textContent=Number(d.total).toLocaleString("en-US").padStart(6,"0");
+$("message").textContent=d.newlyUnlocked?.length
+? "MILESTONE UNLOCKED: "+d.newlyUnlocked.map(x=>x.title).join(", ")
+: messages[Math.floor(Math.random()*messages.length)];
+await refresh();
+}catch(e){
+$("message").textContent="Signal failed. Please try again.";
+}
+busy=false;
+$("press").disabled=false;
+});
+refresh();
+setInterval(refresh,10000);
+</script>
+</body>
+</html>
