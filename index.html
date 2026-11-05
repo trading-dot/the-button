@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,14 +14,15 @@ h1{font-size:clamp(42px,12vw,76px);letter-spacing:-4px;margin:18px 0 8px}
 .sub{color:#999;font-size:13px;letter-spacing:2px}
 .counter{font-size:clamp(55px,15vw,90px);font-weight:800;margin:45px 0 0;font-variant-numeric:tabular-nums}
 .counter-label{font-size:10px;letter-spacing:4px;color:#777}
-button{margin:35px auto 20px;width:170px;height:170px;border-radius:50%;border:7px solid #501515;background:radial-gradient(circle at 35% 30%,#ff5555,#b90000 65%,#650000);color:white;font-size:20px;font-weight:bold;letter-spacing:3px;cursor:pointer;box-shadow:0 0 45px #a0000040,inset 0 4px 12px #ffffff30;transition:.12s}
+button{margin:25px auto 20px;width:170px;height:170px;border-radius:50%;border:7px solid #501515;background:radial-gradient(circle at 35% 30%,#ff5555,#b90000 65%,#650000);color:white;font-size:20px;font-weight:bold;letter-spacing:3px;cursor:pointer;box-shadow:0 0 45px #a0000040,inset 0 4px 12px #ffffff30;transition:.12s}
 button:active{transform:scale(.94);box-shadow:0 0 15px #a00000}
-button:disabled{opacity:.6;cursor:wait}
+button:disabled{opacity:.45;cursor:not-allowed}
+#turnstile-container{display:flex;justify-content:center;min-height:65px;margin:15px auto}
 #message{min-height:25px;color:#ddd;font-size:13px;margin:12px}
 #status{font-size:10px;letter-spacing:2px;color:#777;margin-top:35px}
 .milestones{margin:40px auto 0;text-align:left;max-width:300px;border-top:1px solid #292929;padding-top:20px}
 .milestones h3{font-size:11px;letter-spacing:3px;color:#888}
-.milestone{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #202020;font-size:12px}
+.milestone{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #202020;font-size:12px}
 .locked{color:#666}.unlocked{color:#ff5555}
 footer{font-size:10px;color:#555;margin-top:35px;letter-spacing:2px}
 </style>
@@ -30,69 +32,161 @@ footer{font-size:10px;color:#555;margin-top:35px;letter-spacing:2px}
 <div class="tag">AN INTERNET EXPERIMENT</div>
 <h1>THE BUTTON</h1>
 <div class="sub">ONE BUTTON. ONE INTERNET. WHAT HAPPENS NEXT?</div>
+
 <div class="counter" id="counter">000000</div>
 <div class="counter-label">TOTAL PRESSES WORLDWIDE</div>
-<button id="press">PRESS</button>
-<div id="message">The experiment is waiting for you.</div>
+
+<div id="turnstile-container"></div>
+
+<button id="press" disabled>PRESS</button>
+
+<div id="message">Complete verification to join the experiment.</div>
 <div id="status">CONNECTING TO ENGINE...</div>
+
 <section class="milestones">
 <h3>GLOBAL MILESTONES</h3>
 <div id="milestones">Loading milestones...</div>
 </section>
+
 <footer>SEASON 01 — THE BEGINNING</footer>
 </main>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+
 <script>
 const API="https://the-button-engine.diasadhityaputra07.workers.dev";
+const SITE_KEY="0x4AAAAAAF1G_zPVyk_v8K8KB";
+
 const $=id=>document.getElementById(id);
 let busy=false;
+let turnstileToken=null;
+let widgetId=null;
+
 const messages=[
 "You are now part of the experiment.",
 "Someone pressed before you. Someone will press after you.",
 "One press. One signal.",
 "The internet remembers."
 ];
+
 function render(data){
-$("counter").textContent=Number(data.total||0).toLocaleString("en-US").padStart(6,"0");
+$("counter").textContent=
+Number(data.total||0).toLocaleString("en-US").padStart(6,"0");
+
 if(data.milestones){
 $("milestones").innerHTML=data.milestones.map(m=>
-`<div class="milestone"><span>${m.target.toLocaleString()} — ${m.title}</span><span class="${m.status==="UNLOCKED"?"unlocked":"locked"}">${m.status==="UNLOCKED"?"UNLOCKED":"LOCKED"}</span></div>`
+`<div class="milestone">
+<span>${Number(m.target).toLocaleString()} — ${m.title}</span>
+<span class="${m.status==="UNLOCKED"?"unlocked":"locked"}">
+${m.status==="UNLOCKED"?"UNLOCKED":"LOCKED"}
+</span>
+</div>`
 ).join("");
 }
 }
+
 async function refresh(){
 try{
 const r=await fetch(API+"/api/state");
 if(!r.ok)throw Error("API error");
+
 const d=await r.json();
+if(!d.success)throw Error("State unavailable");
+
 render(d);
 $("status").textContent="● ENGINE ONLINE";
 $("status").style.color="#65bd78";
+
 }catch(e){
 $("status").textContent="● ENGINE OFFLINE — RETRYING";
 $("status").style.color="#e66";
 }
 }
+
+// Called by Cloudflare Turnstile after verification
+function onTurnstileLoad(){
+try{
+widgetId=turnstile.render("#turnstile-container",{
+sitekey:SITE_KEY,
+
+callback:function(token){
+turnstileToken=token;
+$("press").disabled=false;
+$("message").textContent="Verification complete. You may press.";
+},
+
+"expired-callback":function(){
+turnstileToken=null;
+$("press").disabled=true;
+$("message").textContent="Verification expired. Please verify again.";
+},
+
+"error-callback":function(){
+turnstileToken=null;
+$("press").disabled=true;
+$("message").textContent="Verification error. Please reload the page.";
+}
+});
+
+}catch(e){
+$("message").textContent="Verification could not load. Please reload.";
+}
+}
+
 $("press").addEventListener("click",async()=>{
-if(busy)return;
+if(busy||!turnstileToken)return;
+
 busy=true;
 $("press").disabled=true;
 $("message").textContent="Sending your signal...";
+
+const token=turnstileToken;
+turnstileToken=null;
+
 try{
-const r=await fetch(API+"/api/press",{method:"POST"});
-if(!r.ok)throw Error("Press failed");
+const r=await fetch(API+"/api/press",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+turnstileToken:token
+})
+});
+
 const d=await r.json();
-if(!d.success)throw Error("Press failed");
-$("counter").textContent=Number(d.total).toLocaleString("en-US").padStart(6,"0");
+
+if(!r.ok||!d.success){
+throw Error(d.error||"Press failed");
+}
+
+$("counter").textContent=
+Number(d.total).toLocaleString("en-US").padStart(6,"0");
+
 $("message").textContent=d.newlyUnlocked?.length
 ? "MILESTONE UNLOCKED: "+d.newlyUnlocked.map(x=>x.title).join(", ")
 : messages[Math.floor(Math.random()*messages.length)];
+
 await refresh();
+
 }catch(e){
-$("message").textContent="Signal failed. Please try again.";
-}
+$("message").textContent=e.message==="Press failed"
+?"Signal failed. Please try again."
+:"Signal rejected. Please verify again.";
+
+await refresh();
+
+}finally{
 busy=false;
-$("press").disabled=false;
+
+if(window.turnstile&&widgetId!==null){
+turnstile.reset(widgetId);
+}else{
+$("press").disabled=true;
+}
+}
 });
+
 refresh();
 setInterval(refresh,10000);
 </script>
