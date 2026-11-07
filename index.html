@@ -2,743 +2,210 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080808">
 <meta name="description" content="One button. One internet. What happens next?">
 <title>THE BUTTON — Season 01</title>
-
 <style>
-:root{
-  --a:#ff4545;
-  --g:#a00000;
-  --bg:#080808;
-}
-
+:root{--a:#ff4545;--g:#a00000;--bg:#080808;--panel:#101010;--line:#262626;--muted:#888}
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  min-height:100vh;
-  padding:24px;
-  background:var(--bg);
-  color:#fff;
-  font-family:Arial,sans-serif;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  transition:.6s;
-}
-
-main{
-  width:100%;
-  max-width:560px;
-}
-
-.tag{
-  font-size:10px;
-  letter-spacing:5px;
-  color:#888;
-}
-
-h1{
-  font-size:clamp(42px,12vw,76px);
-  letter-spacing:-4px;
-  margin:18px 0 8px;
-}
-
-.sub{
-  font-size:11px;
-  letter-spacing:2px;
-  color:#999;
-  line-height:1.8;
-}
-
-.counter{
-  font-size:clamp(42px,12vw,90px);
-  font-weight:800;
-  margin:38px 0 0;
-  font-variant-numeric:tabular-nums;
-  text-shadow:0 0 25px var(--g);
-  overflow-wrap:anywhere;
-}
-
-.counter-label{
-  font-size:10px;
-  letter-spacing:4px;
-  color:#777;
-}
-
-#press{
-  width:170px;
-  height:170px;
-  margin:32px auto 18px;
-  border-radius:50%;
-  border:7px solid color-mix(in srgb,var(--a) 40%,#222);
-  background:radial-gradient(
-    circle at 35% 25%,
-    #fff,
-    var(--a) 25%,
-    #650000 80%
-  );
-  color:white;
-  font-size:19px;
-  font-weight:bold;
-  letter-spacing:3px;
-  cursor:pointer;
-  box-shadow:0 0 48px var(--g);
-  transition:.15s;
-}
-
-#press:active{
-  transform:scale(.93);
-}
-
-#press:disabled{
-  opacity:.5;
-}
-
-#message{
-  min-height:38px;
-  font-size:13px;
-  line-height:1.6;
-  color:#ddd;
-}
-
-#status{
-  font-size:10px;
-  letter-spacing:2px;
-  color:#777;
-  margin-top:22px;
-}
-
-#stageName{
-  font-size:10px;
-  letter-spacing:3px;
-  color:var(--a);
-  margin-top:12px;
-}
-
-.milestones{
-  max-width:390px;
-  margin:34px auto 0;
-  text-align:left;
-  border-top:1px solid #292929;
-  padding-top:18px;
-}
-
-.milestones h3{
-  font-size:10px;
-  letter-spacing:3px;
-  color:#888;
-}
-
-.milestone{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:11px 2px;
-  border-bottom:1px solid #222;
-  font-size:12px;
-}
-
-.milestone small{
-  display:block;
-  color:#666;
-  font-size:10px;
-  margin-top:4px;
-  line-height:1.5;
-}
-
-.locked{
-  color:#666;
-  white-space:nowrap;
-}
-
-.unlocked{
-  color:var(--a);
-  white-space:nowrap;
-}
-
-#toggleMilestones{
-  display:block;
-  width:100%;
-  margin-top:14px;
-  padding:13px;
-  background:transparent;
-  border:1px solid #383838;
-  color:#aaa;
-  font-size:10px;
-  letter-spacing:2px;
-  cursor:pointer;
-}
-
-#toggleMilestones:hover{
-  border-color:var(--a);
-  color:white;
-}
-
-#toggleMilestones:disabled{
-  opacity:.5;
-}
-
-footer{
-  font-size:10px;
-  color:#555;
-  margin-top:30px;
-  letter-spacing:2px;
-}
-
-body.awakening{
-  --a:#ff9a38;
-  --g:#ff5a00;
-  --bg:#100906;
-}
-
-body.signal{
-  --a:#55e6ff;
-  --g:#00aacc;
-  --bg:#050d12;
-}
-
-body.unknown{
-  --a:#c18aff;
-  --g:#7725ca;
-  --bg:#0c0714;
-}
-
-body.final{
-  --a:#ffe49a;
-  --g:#b98928;
-  --bg:#100e08;
-}
-
-body.signal #press{
-  animation:pulse 2s infinite;
-}
-
-body.unknown #press{
-  animation:glitch 3s infinite;
-}
-
-@keyframes pulse{
-  50%{
-    filter:brightness(1.5);
-    transform:scale(1.02);
-  }
-}
-
-@keyframes glitch{
-  94%,100%{transform:none}
-  95%{transform:translateX(3px)}
-  96%{transform:translateX(-3px)}
-}
-
-.overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:#000d;
-  align-items:center;
-  justify-content:center;
-  padding:22px;
-  z-index:10;
-}
-
-.overlay.show{
-  display:flex;
-}
-
-.modal{
-  max-width:390px;
-  width:100%;
-  padding:30px 24px;
-  background:#111;
-  border:1px solid var(--a);
-  box-shadow:0 0 50px #000;
-}
-
-.modal small{
-  letter-spacing:4px;
-  color:var(--a);
-}
-
-.modal h2{
-  font-size:26px;
-}
-
-.modal p{
-  font-size:14px;
-  line-height:1.7;
-  color:#bbb;
-}
-
-.modal button{
-  padding:12px 25px;
-  background:none;
-  border:1px solid var(--a);
-  color:white;
-  letter-spacing:2px;
-}
-
-.secret{
-  font-size:9px;
-  color:#393939;
-  margin-top:20px;
-}
-
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    animation-duration:.01ms!important;
-    animation-iteration-count:1!important;
-    scroll-behavior:auto!important;
-    transition-duration:.01ms!important;
-  }
-}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;padding:28px 18px 40px;background:var(--bg);color:#fff;font-family:Arial,Helvetica,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center;transition:background .6s,color .3s}
+main{width:100%;max-width:620px;margin:auto}
+.tag{font-size:10px;letter-spacing:5px;color:#888}
+h1{font-size:clamp(42px,12vw,76px);letter-spacing:-4px;margin:18px 0 8px}
+.sub{font-size:11px;letter-spacing:2px;color:#999;line-height:1.8}
+.identity{display:flex;justify-content:center;align-items:center;gap:8px;margin:20px 0 0;color:#999;font-size:10px;letter-spacing:1.5px;text-transform:uppercase}
+.identity strong{color:#fff;font-size:11px;letter-spacing:1px}
+.identity button{background:none;border:0;color:#777;text-decoration:underline;font-size:10px;cursor:pointer;padding:4px}
+.counter{font-size:clamp(42px,12vw,90px);font-weight:800;margin:30px 0 0;font-variant-numeric:tabular-nums;text-shadow:0 0 25px var(--g);overflow-wrap:anywhere}
+.counter-label{font-size:10px;letter-spacing:4px;color:#777}
+#press{width:170px;height:170px;margin:30px auto 16px;border-radius:50%;border:7px solid color-mix(in srgb,var(--a) 40%,#222);background:radial-gradient(circle at 35% 25%,#fff,var(--a) 25%,#650000 80%);color:#fff;font-size:19px;font-weight:bold;letter-spacing:3px;cursor:pointer;box-shadow:0 0 48px var(--g);transition:transform .15s,filter .15s}
+#press:active{transform:scale(.93)}
+#press:disabled{opacity:.45;cursor:not-allowed}
+#message{min-height:38px;font-size:13px;line-height:1.6;color:#ddd}
+#status{font-size:10px;letter-spacing:2px;color:#777;margin-top:15px}
+#onlineBadge{display:flex;align-items:center;justify-content:center;gap:6px;margin:8px auto 0;font-size:9px;letter-spacing:1.5px;color:#777}
+#onlineDot{width:5px;height:5px;border-radius:50%;background:#65bd78;box-shadow:0 0 6px #65bd78;display:inline-block}
+#stageName{font-size:10px;letter-spacing:3px;color:var(--a);margin-top:12px}
+.player-score{margin:17px auto 0;padding:11px 14px;max-width:260px;border:1px solid #242424;background:#0d0d0d;color:#888;font-size:10px;letter-spacing:1.5px}
+.player-score strong{display:block;color:#fff;font-size:22px;letter-spacing:0;margin-top:5px;font-variant-numeric:tabular-nums}
+.section{max-width:440px;margin:34px auto 0;text-align:left;border-top:1px solid var(--line);padding-top:17px}
+.section h2,.milestones h3{font-size:10px;letter-spacing:3px;color:#888;margin:0 0 12px;text-align:center;font-weight:600}
+.leaderboard-head{display:grid;grid-template-columns:36px 1fr auto;gap:10px;padding:8px 10px;color:#555;font-size:9px;letter-spacing:1.5px;border-bottom:1px solid #252525}
+#leaderboard{min-height:42px}
+.player-row{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;padding:12px 10px;border-bottom:1px solid #1d1d1d;font-size:12px}
+.player-row .rank{color:#666;font-variant-numeric:tabular-nums}
+.player-row .player-name{color:#ddd;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player-row .score{color:#fff;font-weight:bold;font-variant-numeric:tabular-nums}
+.player-row.me{background:#1a1010;box-shadow:inset 2px 0 var(--a)}
+.player-row.me .player-name{color:#ff7777}
+#leaderboardNote{font-size:10px;color:#555;text-align:center;line-height:1.6;margin-top:10px}
+.milestones{max-width:440px;margin:34px auto 0;text-align:left;border-top:1px solid var(--line);padding-top:18px}
+.milestones h3{text-align:center}
+.milestone{display:flex;justify-content:space-between;gap:12px;padding:11px 2px;border-bottom:1px solid #222;font-size:12px}
+.milestone small{display:block;color:#666;font-size:10px;margin-top:4px;line-height:1.5}
+.locked{color:#666;white-space:nowrap}.unlocked{color:var(--a);white-space:nowrap}
+#toggleMilestones{display:block;width:100%;margin-top:14px;padding:13px;background:transparent;border:1px solid #383838;color:#aaa;font-size:10px;letter-spacing:2px;cursor:pointer}
+#toggleMilestones:hover{border-color:var(--a);color:#fff}
+footer{font-size:10px;color:#555;margin-top:30px;letter-spacing:2px}
+.secret{font-size:9px;color:#393939;margin-top:20px}
+.overlay{display:none;position:fixed;inset:0;background:#000e;align-items:center;justify-content:center;padding:20px;z-index:20;overflow:auto}
+.overlay.show{display:flex}
+.modal{max-width:390px;width:100%;padding:30px 24px;background:#111;border:1px solid var(--a);box-shadow:0 0 50px #000;text-align:center}
+.modal small{letter-spacing:4px;color:var(--a)}.modal h2{font-size:25px;margin:16px 0 10px}.modal p{font-size:13px;line-height:1.7;color:#bbb}
+.modal button,.primary{padding:13px 22px;background:none;border:1px solid var(--a);color:#fff;letter-spacing:2px;font-size:10px;cursor:pointer}
+#usernameForm{margin-top:20px;text-align:left}
+#usernameForm label{display:block;color:#aaa;font-size:10px;letter-spacing:1.5px;margin-bottom:8px}
+#usernameInput{width:100%;padding:14px;background:#080808;border:1px solid #383838;color:#fff;font-size:16px;outline:none;border-radius:0}
+#usernameInput:focus{border-color:var(--a)}
+#usernameHint{font-size:10px;color:#777;line-height:1.6;margin:8px 0 14px}
+#registerError{min-height:18px;color:#ff7777;font-size:11px;line-height:1.5;margin-bottom:8px}
+#registerButton{width:100%;background:var(--a);border:0;color:#fff;padding:14px;font-weight:bold;letter-spacing:2px}
+#registerButton:disabled{opacity:.5}
+body.awakening{--a:#ff9a38;--g:#ff5a00;--bg:#100906}
+body.signal{--a:#55e6ff;--g:#00aacc;--bg:#050d12}
+body.unknown{--a:#c18aff;--g:#7725ca;--bg:#0c0714}
+body.final{--a:#ffe49a;--g:#b98928;--bg:#100e08}
+body.signal #press{animation:pulse 2s infinite}body.unknown #press{animation:glitch 3s infinite}
+@keyframes pulse{50%{filter:brightness(1.5);transform:scale(1.02)}}
+@keyframes glitch{94%,100%{transform:none}95%{transform:translateX(3px)}96%{transform:translateX(-3px)}}
+@media(max-width:420px){body{padding:24px 15px 34px}h1{letter-spacing:-3px}#press{width:150px;height:150px}.section,.milestones{margin-top:29px}.player-row{padding:11px 6px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 </style>
 </head>
-
 <body>
-
 <main>
-
   <div class="tag">AN INTERNET EXPERIMENT</div>
-
   <h1>THE BUTTON</h1>
+  <div class="sub">ONE BUTTON. ONE INTERNET.<br>WHAT HAPPENS NEXT?</div>
 
-  <div class="sub">
-    ONE BUTTON. ONE INTERNET.<br>
-    WHAT HAPPENS NEXT?
-  </div>
+  <div class="identity" id="identityBar" hidden>PLAYING AS <strong id="currentUsername"></strong><button id="changeIdentity" type="button">NOT YOU?</button></div>
 
   <div class="counter" id="counter">000000</div>
+  <div class="counter-label">TOTAL PRESSES WORLDWIDE</div>
+  <button id="press" disabled>PRESS</button>
+  <div id="message">The experiment is waiting for you.</div>
+  <div id="stageName">STAGE 01 — THE BEGINNING</div>
+  <div id="status">CONNECTING TO ENGINE...</div>
+  <div id="onlineBadge"><span id="onlineDot"></span><span id="onlineCount">—</span> ONLINE NOW</div>
+  <div class="player-score">YOUR CONTRIBUTION<strong id="playerScore">0</strong></div>
 
-  <div class="counter-label">
-    TOTAL PRESSES WORLDWIDE
-  </div>
-
-  <button id="press">PRESS</button>
-
-  <div id="message">
-    The experiment is waiting for you.
-  </div>
-
-  <div id="stageName">
-    STAGE 01 — THE BEGINNING
-  </div>
-
-  <div id="status">
-    CONNECTING TO ENGINE...
-  </div>
-
-  <section class="milestones">
-
-    <h3>GLOBAL MILESTONES</h3>
-
-    <div id="milestones">
-      Loading...
-    </div>
-
-    <button
-      id="toggleMilestones"
-      type="button"
-      hidden
-    >
-      SELENGKAPNYA
-    </button>
-
+  <section class="section" aria-labelledby="leaderboardTitle">
+    <h2 id="leaderboardTitle">GLOBAL LEADERBOARD — TOP 10</h2>
+    <div class="leaderboard-head"><span>RANK</span><span>PLAYER</span><span>PRESSES</span></div>
+    <div id="leaderboard" aria-live="polite"><div class="player-row"><span class="rank">—</span><span class="player-name">Loading leaderboard...</span><span class="score">—</span></div></div>
+    <div id="leaderboardNote">The internet remembers every press.</div>
   </section>
 
-  <footer>
-    SEASON 01 — THE INTERNET EXPERIMENT
-  </footer>
+  <section class="milestones">
+    <h3>GLOBAL MILESTONES</h3>
+    <div id="milestones">Loading...</div>
+    <button id="toggleMilestones" type="button" hidden>SELENGKAPNYA</button>
+  </section>
 
-  <div class="secret">
-    Some signals are hidden in plain sight.
-  </div>
-
+  <footer>SEASON 01 — THE INTERNET EXPERIMENT</footer>
+  <div class="secret">Some signals are hidden in plain sight.</div>
 </main>
 
-<div class="overlay" id="overlay">
-
+<div class="overlay" id="registerOverlay" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
   <div class="modal">
-
-    <small id="modalType">
-      MILESTONE UNLOCKED
-    </small>
-
-    <h2 id="modalTitle">
-      A NEW SIGNAL
-    </h2>
-
-    <p id="modalText"></p>
-
-    <button id="closeModal">
-      CONTINUE
-    </button>
-
+    <small>IDENTITY REQUIRED</small>
+    <h2 id="registerTitle">ENTER THE EXPERIMENT</h2>
+    <p>Choose your username before your first press. Your score will be attached to this browser.</p>
+    <form id="usernameForm">
+      <label for="usernameInput">YOUR USERNAME</label>
+      <input id="usernameInput" name="username" type="text" minlength="3" maxlength="16" pattern="[A-Za-z0-9_]{3,16}" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="e.g. internetghost" required>
+      <div id="usernameHint">3–16 characters. Letters, numbers, and underscore only. No password or email.</div>
+      <div id="registerError" role="alert"></div>
+      <button id="registerButton" class="primary" type="submit">ENTER THE BUTTON</button>
+    </form>
   </div>
+</div>
 
+<div class="overlay" id="eventOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <small id="modalType">MILESTONE UNLOCKED</small>
+    <h2 id="modalTitle">A NEW SIGNAL</h2>
+    <p id="modalText"></p>
+    <button id="closeModal" type="button">CONTINUE</button>
+  </div>
 </div>
 
 <script>
-
-const API =
-"https://the-button-engine.diasadhityaputra07.workers.dev";
-
-const $ = id => document.getElementById(id);
-
-let busy = false;
-let showAllMilestones = false;
-let currentMilestones = [];
-
-const messages = [
-  "You are now part of the experiment.",
-  "Someone pressed before you. Someone will press after you.",
-  "One press. One signal.",
-  "The internet remembers."
+'use strict';
+const API='https://the-button-engine.diasadhityaputra07.workers.dev';
+const $=id=>document.getElementById(id);
+const messages=[
+  'You are now part of the experiment.',
+  'Someone pressed before you. Someone will press after you.',
+  'One press. One signal.',
+  'The internet remembers.'
 ];
-
-const stages = [
-  {
-    n:0,
-    c:"",
-    t:"STAGE 01 — THE BEGINNING"
-  },
-  {
-    n:100,
-    c:"awakening",
-    t:"STAGE 02 — AWAKENING"
-  },
-  {
-    n:500,
-    c:"signal",
-    t:"STAGE 03 — SIGNAL DETECTED"
-  },
-  {
-    n:2500,
-    c:"unknown",
-    t:"STAGE 04 — UNKNOWN SIGNAL"
-  },
-  {
-    n:10000,
-    c:"final",
-    t:"STAGE 05 — THE INTERNET HAS SPOKEN"
-  }
+const stages=[
+  {n:0,c:'',t:'STAGE 01 — THE BEGINNING'},
+  {n:100,c:'awakening',t:'STAGE 02 — AWAKENING'},
+  {n:500,c:'signal',t:'STAGE 03 — SIGNAL DETECTED'},
+  {n:2500,c:'unknown',t:'STAGE 04 — UNKNOWN SIGNAL'},
+  {n:10000,c:'final',t:'STAGE 05 — THE INTERNET HAS SPOKEN'}
 ];
-
-function esc(value){
-
-  return String(value ?? "").replace(
-    /[&<>"']/g,
-    char => ({
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#39;"
-    }[char])
-  );
-
+let busy=false,registering=false,showAllMilestones=false,currentMilestones=[],currentPlayer=null;
+let visitorId=localStorage.getItem('the_button_visitor_id');
+if(!visitorId){visitorId=makeUUID();localStorage.setItem('the_button_visitor_id',visitorId)}
+function makeUUID(){
+  if(crypto.randomUUID)return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)});
 }
-
-function stage(total){
-
-  let selected = stages[0];
-
-  stages.forEach(item => {
-
-    if(total >= item.n){
-      selected = item;
-    }
-
-  });
-
-  document.body.className = selected.c;
-
-  $("stageName").textContent = selected.t;
-
-}
-
-function popup(title,message,type){
-
-  $("modalTitle").textContent =
-    title || "A NEW SIGNAL";
-
-  $("modalText").textContent =
-    message || "You are part of something bigger.";
-
-  $("modalType").textContent =
-    type || "MILESTONE UNLOCKED";
-
-  $("overlay").classList.add("show");
-
-}
-
-$("closeModal").onclick = () => {
-
-  $("overlay").classList.remove("show");
-
-};
-
-$("overlay").onclick = event => {
-
-  if(event.target === $("overlay")){
-    $("overlay").classList.remove("show");
-  }
-
-};
-
+function stage(total){let selected=stages[0];stages.forEach(item=>{if(total>=item.n)selected=item});document.body.className=selected.c;$('stageName').textContent=selected.t}
+function showEvent(title,message,type){$('modalTitle').textContent=title||'A NEW SIGNAL';$('modalText').textContent=message||'You are part of something bigger.';$('modalType').textContent=type||'MILESTONE UNLOCKED';$('eventOverlay').classList.add('show')}
+function closeEvent(){$('eventOverlay').classList.remove('show')}
+$('closeModal').addEventListener('click',closeEvent);
+$('eventOverlay').addEventListener('click',e=>{if(e.target===$('eventOverlay'))closeEvent()});
 function renderMilestones(){
-
-  const all = currentMilestones
-    .slice()
-    .sort((a,b) => Number(a.target)-Number(b.target));
-
-  let visible = all;
-
-  if(!showAllMilestones){
-
-    const unlocked = all
-      .filter(m => m.status === "UNLOCKED")
-      .slice(-2);
-
-    const upcoming = all
-      .filter(m => m.status !== "UNLOCKED")
-      .slice(0,5);
-
-    const keep = new Set([
-      ...unlocked,
-      ...upcoming
-    ]);
-
-    visible = all.filter(m => keep.has(m));
-
-  }
-
-  $("milestones").innerHTML = visible.map(m => {
-
-    const yes = m.status === "UNLOCKED";
-
-    return `
-      <div class="milestone">
-
-        <span>
-          ${esc(
-            Number(m.target).toLocaleString("en-US")
-            + " — " + m.title
-          )}
-
-          ${
-            m.description
-            ? `<small>${esc(m.description)}</small>`
-            : ""
-          }
-
-        </span>
-
-        <span class="${yes ? "unlocked" : "locked"}">
-          ${yes ? "UNLOCKED" : "LOCKED"}
-        </span>
-
-      </div>
-    `;
-
-  }).join("");
-
-  const toggle = $("toggleMilestones");
-
-  toggle.hidden = all.length <= 7;
-
-  toggle.textContent = showAllMilestones
-    ? "TUTUP DAFTAR"
-    : "SELENGKAPNYA — " + all.length + " MILESTONES";
-
+  const all=currentMilestones.slice().sort((a,b)=>Number(a.target)-Number(b.target));let visible=all;
+  if(!showAllMilestones){const unlocked=all.filter(m=>m.status==='UNLOCKED').slice(-2);const upcoming=all.filter(m=>m.status!=='UNLOCKED').slice(0,5);const keep=new Set([...unlocked,...upcoming]);visible=all.filter(m=>keep.has(m))}
+  const root=$('milestones');root.replaceChildren();
+  visible.forEach(m=>{const row=document.createElement('div');row.className='milestone';const info=document.createElement('span');info.append(document.createTextNode(Number(m.target).toLocaleString('en-US')+' — '+(m.title||'Milestone')));if(m.description){const small=document.createElement('small');small.textContent=m.description;info.append(small)}const status=document.createElement('span');const yes=m.status==='UNLOCKED';status.className=yes?'unlocked':'locked';status.textContent=yes?'UNLOCKED':'LOCKED';row.append(info,status);root.append(row)});
+  $('toggleMilestones').hidden=all.length<=7;$('toggleMilestones').textContent=showAllMilestones?'TUTUP DAFTAR':'SELENGKAPNYA — '+all.length+' MILESTONES';
 }
-
-$("toggleMilestones").onclick = () => {
-
-  showAllMilestones = !showAllMilestones;
-
-  renderMilestones();
-
-};
-
-function render(data){
-
-  const total = Number(data.total || 0);
-
-  $("counter").textContent =
-    total.toLocaleString("en-US").padStart(6,"0");
-
-  stage(total);
-
-  if(Array.isArray(data.milestones)){
-
-    currentMilestones = data.milestones;
-
-    renderMilestones();
-
-  }
-
-}
-
-async function refresh(){
-
-  try{
-
-    const response = await fetch(
-      API + "/api/state",
-      {cache:"no-store"}
-    );
-
-    if(!response.ok){
-      throw Error("API error");
-    }
-
-    const data = await response.json();
-
-    if(!data.success){
-      throw Error("State unavailable");
-    }
-
-    render(data);
-
-    $("status").textContent =
-      "● ENGINE ONLINE";
-
-    $("status").style.color = "#65bd78";
-
-  }catch(error){
-
-    console.error(error);
-
-    $("status").textContent =
-      "● ENGINE OFFLINE — RETRYING";
-
-    $("status").style.color = "#e66";
-
-  }
-
-}
-
-$("press").onclick = async () => {
-
-  if(busy) return;
-
-  busy = true;
-
-  $("press").disabled = true;
-
-  $("message").textContent =
-    "Sending your signal...";
-
-  try{
-
-    const response = await fetch(
-      API + "/api/press",
-      {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body:JSON.stringify({})
-      }
-    );
-
-    const data = await response.json();
-
-    if(!response.ok || !data.success){
-      throw Error(data.error || "Press failed");
-    }
-
-    $("counter").textContent =
-      Number(data.total).toLocaleString("en-US");
-
-    stage(Number(data.total));
-
-    if(data.newlyUnlocked?.length){
-
-      const milestone = data.newlyUnlocked[0];
-
-      $("message").textContent =
-        "MILESTONE UNLOCKED: " +
-        data.newlyUnlocked
-          .map(item => item.title)
-          .join(", ");
-
-      popup(
-        milestone.title,
-        milestone.reward_content ||
-        milestone.description ||
-        "You thought you were pressing a button. But you were building something.",
-        milestone.reward_type ||
-        "MILESTONE UNLOCKED"
-      );
-
-    }else{
-
-      $("message").textContent =
-        messages[
-          Math.floor(Math.random()*messages.length)
-        ];
-
-    }
-
-    await refresh();
-
-  }catch(error){
-
-    console.error(error);
-
-    $("message").textContent =
-      error.message === "Rate limit exceeded"
-      ? "Too fast! Please wait a moment."
-      : "Signal rejected. Please try again.";
-
-    await refresh();
-
-  }finally{
-
-    busy = false;
-
-    $("press").disabled = false;
-
-  }
-
-};
-
-// SECRET EASTER EGG: WATCHER
-
-let secret = "";
-
-document.addEventListener("keydown", event => {
-
-  if(event.key.length !== 1) return;
-
-  secret = (
-    secret + event.key.toUpperCase()
-  ).slice(-7);
-
-  if(secret === "WATCHER"){
-
-    popup(
-      "THE WATCHER",
-      "You found a signal hidden in plain sight. Keep watching. The experiment is still alive.",
-      "SECRET FOUND"
-    );
-
-  }
-
+$('toggleMilestones').addEventListener('click',()=>{showAllMilestones=!showAllMilestones;renderMilestones()});
+function renderState(data){const total=Number(data.total||0);$('counter').textContent=total.toLocaleString('en-US').padStart(6,'0');stage(total);if(Array.isArray(data.milestones)){currentMilestones=data.milestones;renderMilestones()}}
+async function getJSON(path,options={}){const response=await fetch(API+path,{cache:'no-store',...options});const data=await response.json().catch(()=>({success:false,error:'Invalid server response'}));if(!response.ok||!data.success){const error=new Error(data.error||'Request failed');error.status=response.status;throw error}return data}
+async function refreshState(){try{const data=await getJSON('/api/state');renderState(data);$('status').textContent='● ENGINE ONLINE';$('status').style.color='#65bd78'}catch(error){console.error(error);$('status').textContent='● ENGINE OFFLINE — RETRYING';$('status').style.color='#e66'}}
+function updatePlayer(player){currentPlayer=player;$('identityBar').hidden=false;$('currentUsername').textContent=player.username;$('playerScore').textContent=Number(player.presses||0).toLocaleString('en-US');$('press').disabled=false}
+function openRegistration(){currentPlayer=null;$('identityBar').hidden=true;$('press').disabled=true;$('registerError').textContent='';$('usernameInput').value=localStorage.getItem('the_button_username')||'';$('registerOverlay').classList.add('show');setTimeout(()=>$('usernameInput').focus(),80)}
+async function registerPlayer(username){return getJSON('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,visitorId})})}
+$('usernameForm').addEventListener('submit',async e=>{
+  e.preventDefault();if(registering)return;const username=$('usernameInput').value.trim();if(!/^[A-Za-z0-9_]{3,16}$/.test(username)){$('registerError').textContent='Use 3–16 letters, numbers, or underscores.';return}
+  registering=true;$('registerButton').disabled=true;$('registerButton').textContent='CONNECTING...';$('registerError').textContent='';
+  try{const player=await registerPlayer(username);localStorage.setItem('the_button_username',player.username);updatePlayer(player);$('registerOverlay').classList.remove('show');$('message').textContent=player.returning?'Welcome back. Your signal is still here.':'You have entered the experiment. Make your first press.';await Promise.all([refreshLeaderboard(),refreshState()])}
+  catch(error){$('registerError').textContent=error.message==='Username already taken'?'That username is already taken. Choose another one.':error.message||'Could not register. Try again.'}
+  finally{registering=false;$('registerButton').disabled=false;$('registerButton').textContent='ENTER THE BUTTON'}
 });
-
-// INITIALIZE
-
-refresh();
-
-setInterval(refresh,15000);
-
+$('changeIdentity').addEventListener('click',()=>{showEvent('IDENTITY IS LOCKED','This browser already has a player identity. To protect your score, changing usernames is not available in Season 01.','PLAYER IDENTITY');});
+async function refreshLeaderboard(){
+  try{const data=await getJSON('/api/leaderboard');const root=$('leaderboard');root.replaceChildren();const rows=Array.isArray(data.leaderboard)?data.leaderboard:[];
+    if(!rows.length){const empty=document.createElement('div');empty.className='player-row';empty.textContent='No players yet. Be the first signal.';root.append(empty)}
+    rows.forEach((player,index)=>{const row=document.createElement('div');row.className='player-row'+(currentPlayer&&player.username.toLowerCase()===currentPlayer.username.toLowerCase()?' me':'');const rank=document.createElement('span');rank.className='rank';rank.textContent=String(index+1).padStart(2,'0');const name=document.createElement('span');name.className='player-name';name.textContent=player.username;const score=document.createElement('span');score.className='score';score.textContent=Number(player.presses||0).toLocaleString('en-US');row.append(rank,name,score);root.append(row)});
+    $('leaderboardNote').textContent=currentPlayer?'Your score is counted under '+currentPlayer.username+'.':'Enter a username to join the leaderboard.';
+  }catch(error){console.error(error);$('leaderboard').textContent='Leaderboard temporarily unavailable.';$('leaderboardNote').textContent='Please try again in a moment.'}
+}
+async function sendPresence(){if(document.visibilityState!=='visible')return;try{await getJSON('/api/presence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorId})})}catch(error){console.debug('Presence update skipped:',error.message)}}
+async function refreshOnline(){try{const data=await getJSON('/api/online');$('onlineCount').textContent=Number(data.online||0).toLocaleString('en-US')}catch(error){$('onlineCount').textContent='—'}}
+$('press').addEventListener('click',async()=>{
+  if(busy||!currentPlayer)return;busy=true;$('press').disabled=true;$('message').textContent='Sending your signal...';
+  try{const data=await getJSON('/api/press',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorId})});$('counter').textContent=Number(data.total).toLocaleString('en-US').padStart(6,'0');stage(Number(data.total));if(typeof data.playerPresses==='number'){$('playerScore').textContent=data.playerPresses.toLocaleString('en-US');currentPlayer.presses=data.playerPresses}
+    if(data.newlyUnlocked?.length){const milestone=data.newlyUnlocked[0];$('message').textContent='MILESTONE UNLOCKED: '+data.newlyUnlocked.map(item=>item.title).join(', ');showEvent(milestone.title,milestone.reward_content||milestone.description||'You thought you were pressing a button. But you were building something.',milestone.reward_type||'MILESTONE UNLOCKED')}
+    else{$('message').textContent=messages[Math.floor(Math.random()*messages.length)]}
+    await Promise.all([refreshState(),refreshLeaderboard()]);
+  }catch(error){console.error(error);$('message').textContent=error.message==='Rate limit exceeded'?'Too fast! Please wait a moment.':error.message==='Please enter a username first'?'Enter your username before pressing.':'Signal rejected. Please try again.';await refreshState()}
+  finally{busy=false;$('press').disabled=!currentPlayer}
+});
+let secret='';document.addEventListener('keydown',event=>{if(event.target instanceof HTMLInputElement||event.target instanceof HTMLTextAreaElement)return;if(event.key.length!==1)return;secret=(secret+event.key.toUpperCase()).slice(-7);if(secret==='WATCHER')showEvent('THE WATCHER','You found a signal hidden in plain sight. Keep watching. The experiment is still alive.','SECRET FOUND')});
+async function initialize(){await refreshState();await sendPresence();await refreshOnline();const savedUsername=localStorage.getItem('the_button_username');if(savedUsername){try{const player=await registerPlayer(savedUsername);updatePlayer(player)}catch(error){if(error.status===409){localStorage.removeItem('the_button_username');openRegistration()}else{console.error(error);openRegistration()}}}else{openRegistration()}await refreshLeaderboard()}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){sendPresence();refreshOnline();refreshLeaderboard()}});
+initialize();
+setInterval(refreshState,15000);setInterval(refreshLeaderboard,20000);setInterval(refreshOnline,10000);setInterval(sendPresence,25000);
 </script>
-
 </body>
 </html>
